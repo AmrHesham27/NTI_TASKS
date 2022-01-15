@@ -17,6 +17,9 @@
         </div>
         <div class="mb-3">
             <input class="form-control" name="age" placeholder="Enter your age" value="{{user.age}}">
+            {{#if errors.age}}
+                <div class="text-danger"><span>{{errors.age}}</span></div>
+            {{/if}}
         </div>
         <div class="mb-3">
             <input class="form-control" name="email" placeholder="Enter your email" value="{{user.email}}">
@@ -26,6 +29,12 @@
         </div>
         <div class="mb-3">
             <input class="form-control" name="address" placeholder="Enter your address" value="{{user.address}}">
+            {{#if errors.address}}
+                <div class="text-danger"><span>{{errors.address}}</span></div>
+            {{/if}}
+        </div>
+        <div class="mb-3">
+            <input class="form-control" name="balance" readonly value="{{user.balance}}">
         </div>
         <div class="mb-3">
             <button class="btn btn-primary">Edit Data</button>
