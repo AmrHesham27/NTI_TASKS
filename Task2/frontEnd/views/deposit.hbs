@@ -1,0 +1,40 @@
+{{>header}}
+{{>navbar}}
+<section class="container my-3">
+    <div class="d-flex justify-content-end mb-3">
+        <a href="/addPost" class="btn btn-primary mx-3">Add New Customer</a>
+    </div>
+    <div>
+        <form id= "transactionForm" method="post">
+            <div class="btn-3 w-25">
+                <label>name</label>
+                <input value={{user.name}} id='name' name="name" class="form-control" readonly>
+            </div>
+
+            <div class="btn-3 w-25">
+                <label>balance</label>
+                <input value={{user.balance}} id='balance' name="balance" class="form-control" readonly>
+            </div>
+
+            <div class="btn-3 w-25">
+                <label>amount</label>
+                <input id='amount' name="amount" class="form-control">
+                {{#if errors.balance}}
+                    <div class="text-danger"><span>{{errors.balance}}</span></div>
+                {{/if}}
+            </div>
+
+            <div>
+                <input type="radio" name="transaction" value="deposit">
+                <label for="deposit">deposit</label>
+                <input type="radio" name="transaction" value="withdraw">
+                <label for="withdraw">withdraw</label><br>
+            </div>
+                
+            <div class="btn-3">
+                <button class="btn btn-primary">Ok</button>
+            </div>
+        </form>
+    </div>
+</section>
+{{>footer}}

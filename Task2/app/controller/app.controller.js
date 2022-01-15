@@ -22,16 +22,20 @@ class User {
             errors.name = "name is required"
         if (!ValiadtorController.isValidEmail(user.email))
             errors.email = "enter a valid mail"
+        if (!ValiadtorController.isPositiveNumber(user.age))
+        errors.age = "enter a valid number"
+        if (!ValiadtorController.isPositiveNumber(user.balance))
+        errors.balance = "enter a valid initial balance"
         return errors
     }
 
     static addUserPost = (req, res) => {
-        const user = { name: "", email: "", age: "", address: "" }
+        const user = { name: "", email: "", age: "", address: "", balance:"" }
         res.render("addPost", { pageTitle: "add new user(post)", user, errors: {} })
     }
 
     static addUserLogic = (req, res) => {
-        let user = req.body
+        let user = {...req.body, balance:+req.body.balance, transactions:[] }
         let errors = this.checkForm(user)
         if (Object.keys(errors).length > 0)
             return res.render('addPost', {
@@ -48,17 +52,82 @@ class User {
     })
     }
 
+    static addTrans = (req, res) => {
+        const _id = req.params.id
+        dbConnection((err, client, db) => {
+            db.collection('data').findOne({_id: new ObjectId(_id)}, (err, result) => {
+                if(err) { console.log(err); return res.redirect('/err') };
+                //if (!result) isNotFound = true;
+                res.render("deposit", {
+                    pageTitle: "Add Transaction",
+                    user: result
+                    //noTrans
+                })
+                client.close();
+            })
+        })
+    }
+
+    static addTransLogic = (req, res) => {
+        const _id = req.params.id
+        const user = req.body
+        const newTrans = {
+            amount :+req.body.amount,
+            type: req.body.transaction, 
+            id: Date.now()
+        }
+        const amount = user.transaction == 'deposit'? +newTrans.amount : -newTrans.amount
+        let newBalance = +user['balance'] + amount
+        let errors = {}
+        if (!ValiadtorController.isPositiveNumber(newTrans.amount))
+            errors.balance = "enter a valid initial balance"
+        if (user.transaction == 'withdraw' && newBalance < 0)
+            errors.balance = "balance is low"
+        if (Object.keys(errors).length > 0)
+        {   console.log(user, errors, newBalance)
+            return res.render("deposit", {
+                pageTitle: "Add Transaction",
+                user,
+                errors
+            })
+        }
+        dbConnection((err, client, db) => {
+            db.collection('data').updateOne({_id: new ObjectId(_id)}, { 
+                $push: { transactions: newTrans },
+                $inc: { balance: amount } 
+            })
+            .then( () => {
+                client.close()
+                res.render("deposit", {
+                    pageTitle: "Add Transaction",
+                    user : {
+                        ...user,
+                        balance: newBalance
+                    }
+                })
+            })
+            .catch( e => {
+                console.log(e.message)
+                client.close()
+                res.redirect('/err')
+            })
+        })
+    }
+
     static singleUser = (req, res) => {
         const _id = req.params.id
         let isNotFound = false;
+        let noTrans = false
         dbConnection((err, client, db) => {
             db.collection('data').findOne({_id: new ObjectId(_id)}, (err, result) => {
                 if(err) return res.redirect('/err');
                 if (!result) isNotFound = true;
+                if (result['transactions'].length == 0){ noTrans = true }
                 res.render("single", {
                     pageTitle: "User Details",
                     user: result,
-                    isNotFound
+                    isNotFound,
+                    noTrans
                 })
                 client.close();
             })
@@ -118,13 +187,6 @@ class User {
                 client.close()
                 res.redirect('/err')
             })
-           
-
-            /* db.collection('data').deleteOne({_id: new ObjectId(_id)}, (err, result) => {
-                if(err) return res.redirect('/err')
-                client.close()
-                res.redirect('/')
-            }) */
         })
     }
 }

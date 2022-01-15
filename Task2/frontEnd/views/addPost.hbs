@@ -1,7 +1,7 @@
 {{>header}}
 {{>navbar}}
 <section class="container my-3">
-    <h2>Add New User (POST)</h2>
+    <h2>Add New Customer</h2>
     <form method="post">
         <div class="mb-3">
             <input class="form-control" name="name" placeholder="Enter your name" value="{{user.name}}">
@@ -11,11 +11,21 @@
         </div>
         <div class="mb-3">
             <input class="form-control" name="age" placeholder="Enter your age"  value="{{user.age}}">
+            {{#if errors.age}}
+                <div class="text-danger"><span>{{errors.age}}</span></div>
+            {{/if}}
         </div>
         <div class="mb-3">
             <input class="form-control" name="email" placeholder="Enter your email"  value="{{user.email}}">
             {{#if errors.email}}
                 <div class="text-danger"><span>{{errors.email}}</span></div>
+            {{/if}}
+            
+        </div>
+        <div class="mb-3">
+            <input class="form-control" name="balance" placeholder="Enter initial deposit"  value="{{user.balance}}">
+            {{#if errors.balance}}
+                <div class="text-danger"><span>{{errors.balance}}</span></div>
             {{/if}}
             
         </div>

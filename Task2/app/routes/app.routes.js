@@ -11,4 +11,8 @@ router.post("/edit/:id", User.editUserLogic)
 
 router.get("/delete/:id", User.deleteUser)
 router.get("/single/:id", User.singleUser)
+
+router.get("/deposit/:id", User.addTrans)
+router.post("/deposit/:id", User.addTransLogic)
+
 module.exports = router

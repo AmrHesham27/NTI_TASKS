@@ -7,16 +7,40 @@
                 user not found
             </div>        
         {{else}}
-        <h5>Name: {{user.name}}</h5>
-        <h6>age: {{user.age}}</h6>
-        <p>
-            address: {{user.address}}
-        </p>
-        <p>
-            email: {{user.email}}
-        </p>
-        
+            <h5>Name: {{user.name}}</h5>
+            <h6>age: {{user.age}}</h6>
+            <p>
+                address: {{user.address}}
+            </p>
+            <p>
+                email: {{user.email}}
+            </p>
+            <p>
+                balance: {{user.balance}}$
+            </p>
+            {{#if noTrans}}
+                <div class="alert alert-danger"> no transactions yet </div>                    
+            {{else}}
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>transaction Id</th>
+                            <th>type</th>
+                            <th>amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each user.transactions}}
+                            <tr>
+                                <td>{{this.id}}</td>
+                                <td>{{this.type}}</td>
+                                <td>{{this.amount}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            {{/if}}
         {{/if}}
-    </div>
-</section>
-{{>footer}}
+                    </div>
+                </section>
+                {{>footer}}
